@@ -18,15 +18,40 @@ public class BrandListener implements PluginMessageListener {
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, byte @NotNull [] message) {
         if (channel.equals("MC|Brand") || channel.equals("minecraft:brand")) {
             String clientName = new String(message).trim().toLowerCase();
-            if (clientName.contains("forge")) {
+            if (Brand.brand(clientName) == Brand.FORGE) {
                 plugin.addForgeUser(player);
-                plugin.getLogger().info("Registered " + player.getName() + " as a forge user");
+            } else if (Brand.brand(clientName) == Brand.NEOFORGE) {
+                plugin.addNeoForgeUser(player);
+            } else if (Brand.brand(clientName) == Brand.FABRIC) {
+                plugin.addFabricUser(player);
             } else {
-                if (plugin.isForgeUser(player)) {
-                    plugin.removeForgeUser(player);
-                    plugin.getLogger().info("Unregistered " + player.getName() + " as a forge user");
+                plugin.removeForgeUser(player);
+                plugin.removeNeoForgeUser(player);
+                plugin.removeFabricUser(player);
+            }
+        }
+    }
+
+    public enum Brand {
+        FORGE("forge"),
+        NEOFORGE("neoforge"),
+        FABRIC("fabric"),
+        QUILT("quilt"),
+        VANILLA("vanilla");
+
+        private final String name;
+
+        Brand(String name) {
+            this.name = name;
+        }
+
+        public static Brand brand(String name) {
+            for (Brand brand : values()) {
+                if (brand.name.equals(name)) {
+                    return brand;
                 }
             }
+            return Brand.VANILLA;
         }
     }
 }

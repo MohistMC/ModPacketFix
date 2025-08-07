@@ -17,7 +17,16 @@ import java.util.ArrayList;
  * The ModPacketFix Bukkit plugin.
  */
 public class BukkitModPacketFixPlugin extends JavaPlugin {
+
+    private BukkitModPacketFixPlugin plugin;
+
     private final ArrayList<String> forgeUsers = new ArrayList<>();
+    private final ArrayList<String> neoforgeUsers = new ArrayList<>();
+    private final ArrayList<String> fabricUsers = new ArrayList<>();
+
+    public BukkitModPacketFixPlugin api(){
+        return plugin;
+    }
 
     /**
      * If the user is using forge
@@ -45,10 +54,61 @@ public class BukkitModPacketFixPlugin extends JavaPlugin {
     }
 
     /**
+     * If the user is using neoforge
+     * @param player The player to check
+     * @return If the user is using neoforge
+     */
+    public boolean isNeoForgeUser(Player player) {
+        return neoforgeUsers.contains(player.getName());
+    }
+
+    /**
+     * Add a user to the neoforge users list
+     * @param player The player to add
+     */
+    public void addNeoForgeUser(Player player) {
+        if (!isNeoForgeUser(player)) neoforgeUsers.add(player.getName());
+    }
+
+    /**
+     * Remove a user from the neoforge users list
+     * @param player The player to remove
+     */
+    public void removeNeoForgeUser(Player player) {
+        neoforgeUsers.remove(player.getName());
+    }
+
+    /**
+     * If the user is using fabric
+     * @param player The player to check
+     * @return If the user is using fabric
+     */
+    public boolean isFabricUser(Player player) {
+        return fabricUsers.contains(player.getName());
+    }
+
+    /**
+     * Add a user to the fabric users list
+     * @param player The player to add
+     */
+    public void addFabricUser(Player player) {
+        if (!isFabricUser(player)) fabricUsers.add(player.getName());
+    }
+
+    /**
+     * Remove a user from the fabric users list
+     * @param player The player to remove
+     */
+    public void removeFabricUser(Player player) {
+        fabricUsers.remove(player.getName());
+    }
+
+    /**
      * @inheritDoc
      */
     @Override
     public void onEnable() {
+        plugin = this;
         ConfigLoader.loadConfig();
 
         Messenger messenger = getServer().getMessenger();
@@ -70,6 +130,7 @@ public class BukkitModPacketFixPlugin extends JavaPlugin {
 
         // Test packet listener
 //        manager.addPacketListener(new TestPacketListener(this, PacketType.Login.Client.CUSTOM_PAYLOAD, false));
+        new ModPacketFixPapiHook(this).register();
     }
 
     /**
@@ -79,5 +140,8 @@ public class BukkitModPacketFixPlugin extends JavaPlugin {
     public void onDisable() {
         getLogger().info("Clearing forge users list");
         forgeUsers.clear();
+        neoforgeUsers.clear();
+        fabricUsers.clear();
+        new ModPacketFixPapiHook(this).unregister();
     }
 }

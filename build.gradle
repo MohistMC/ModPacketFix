@@ -8,7 +8,7 @@ subprojects {
     apply(plugin: 'java')
 
     group = 'dev.neuralnexus'
-    version = '1.0.2'
+    version = '2.0'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -53,6 +53,9 @@ subprojects {
             name = "viaversion-repo"
             url = "https://repo.viaversion.com"
         }
+
+
+        maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi' }
     }
 }
 

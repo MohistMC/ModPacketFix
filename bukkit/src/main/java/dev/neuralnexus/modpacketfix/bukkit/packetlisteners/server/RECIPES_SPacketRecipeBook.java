@@ -21,7 +21,7 @@ public class RECIPES_SPacketRecipeBook extends PacketAdapter {
     @Override
     public void onPacketSending(PacketEvent event) {
         Player player = event.getPlayer();
-        if (plugin.isForgeUser(player) || ConfigLoader.getConfig().alwaysCancelRecipeBook) {
+        if (plugin.isForgeUser(player) || plugin.isNeoForgeUser(player) || plugin.isFabricUser(player)|| ConfigLoader.getConfig().alwaysCancelRecipeBook) {
             event.setCancelled(true);
             plugin.getLogger().info("Skipping Recipe Book packet [SPacketRecipeBook] being sent to " + player.getName());
         }
